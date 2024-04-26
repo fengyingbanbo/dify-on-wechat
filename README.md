@@ -2,8 +2,10 @@
 <h1>Dify on WeChat</h1>
 
 本项目为 [chatgpt-on-wechat](https://github.com/zhayujie/chatgpt-on-wechat)下游分支
+
 额外对接了LLMOps平台 [Dify](https://github.com/langgenius/dify)，支持Dify智能助手模型，调用工具和知识库，支持Dify工作流。
 
+如果我的项目对您有帮助请点一个star吧~
 </div>
 
 
@@ -22,11 +24,33 @@
 - [x] **企业微信应用** 
 - [x] **企业服务公众号**
 - [ ] **个人订阅公众号** 待测试
+- [ ] **企业微信客服** 待测试
 - [ ] **钉钉** 待测试
 - [ ] **飞书** 待测试
 
 # 最新功能
-## 1. 支持COZE API
+## 1. 集成[JinaSum](https://github.com/hanfangyuan4396/jina_sum)插件
+使用Jina Reader和ChatGPT支持总结公众号、小红书、知乎等分享卡片链接，配置详情请查看[JinaSum](https://github.com/hanfangyuan4396/jina_sum)
+
+![plugin-jinasum-1](./plugins/jina_sum/docs/images/wechat_mp.jpg)
+![plugin-jinasum-1](./plugins/jina_sum/docs/images/red.jpg)
+
+## 2. Suno音乐插件
+使用 [Suno](https://github.com/hanfangyuan4396/suno) 插件生成音乐
+
+![plugin-suno-1](./docs/images/plugin-suno-1.jpg)
+![plugin-suno-2](./docs/images/plugin-suno-2.jpg)
+
+我把音乐、封面和歌词简单剪成了一个视频，效果很炸裂，Suno生成的效果好的离谱
+
+https://github.com/hanfangyuan4396/dify-on-wechat/assets/43166868/396fa76f-a5d9-4de2-8ce2-365ceb6684f0
+
+
+## 3. 支持Dify Chatflow & Workflow
+dify官网已正式上线工作流模式，可以导入本项目下的[dsl文件](./dsl/chat-workflow.yml)快速创建工作流进行测试。工作流输入变量名称十分灵活，对于**工作流类型**的应用，本项目**约定工作流的输入变量命名为`query`**，**输出变量命名为`text`**。
+
+(ps: 感觉工作流类型应用不太适合作为聊天机器人，现在它还没有会话的概念，需要自己管理上下文。但是它可以调用各种工具，通过http请求和外界交互，适合执行业务逻辑复杂的任务；它可以导入导出工作流dsl文件，方便分享移植。也许以后dsl文件+配置文件就可以作为本项目的一个插件。)
+## 4. 支持COZE API
 
 ![image-5](./docs/images/image5.jpg)
 
@@ -34,7 +58,7 @@
 
 
 
-### 1.1 如何快速启动coze微信机器人
+### 4.1 如何快速启动coze微信机器人
 
 - 请参照**快速开始**步骤克隆源码并安装依赖
 
@@ -70,7 +94,10 @@ python3 app.py                                    # windows环境下该命令通
 
 
 # 更新日志
-- 2024/04/08 支持聊天助手类型应用内置的工作流，支持dify基础的对话工作流，dify官网已正式上线工作流模式。可以导入本项目下的[dsl文件](./dsl/chat-workflow.yml)快速创建工作流进行测试。工作流输入变量名称十分灵活，对于**工作流类型**的应用，本项目**约定工作流的输入变量命名为`query`**，**输出变量命名为`text`**。(ps: 感觉工作流类型应用不太适合作为聊天机器人，现在它还没有会话的概念，需要自己管理上下文。但是它可以调用各种工具，通过http请求和外界交互，适合执行业务逻辑复杂的任务；它可以导入导出工作流dsl文件，方便分享移植。也许以后dsl文件+配置文件就可以作为本项目的一个插件。)
+- 2024/04/24 集成JinaSum插件，修复总结微信公众号文章，修复dify usage key error, 修复dify私有部署的图片url错误
+- 2024/04/16 支持基本的企业微信客服通道，感谢[**@lei195827**](https://github.com/lei195827), [**@sisuad**](https://github.com/sisuad) 的贡献
+- 2024/04/14 Suno音乐插件，Dify on WeChat对接详细教程，config文件bug修复
+- 2024/04/08 支持聊天助手类型应用内置的Chatflow，支持dify基础的对话Workflow
 - 2024/04/04 支持docker部署
 - 2024/03/31 支持coze api(内测版)
 - 2024/03/29 支持dify基础的对话工作流，由于dify官网还未上线工作流，需要自行部署测试 [0.6.0-preview-workflow.1](https://github.com/langgenius/dify/releases/tag/0.6.0-preview-workflow.1)。
@@ -85,6 +112,8 @@ python3 app.py                                    # windows环境下该命令通
 # 快速开始
 
 接入非Dify机器人可参考原项目文档 [chatgpt-on-wechat](https://github.com/zhayujie/chatgpt-on-wechat)、[项目搭建文档](https://docs.link-ai.tech/cow/quick-start)
+
+Dify接入微信生态的**详细教程**请查看文章 [**手摸手教你把 Dify 接入微信生态**](https://docs.dify.ai/v/zh-hans/learn-more/use-cases/dify-on-wechat)
 
 下文介绍如何快速接入Dify
 
@@ -181,13 +210,15 @@ docker compose up -d           # 启动docker容器
 docker logs -f dify-on-wechat  # 查看二维码并登录
 ```
 
+# Contributors
+<a href="https://github.com/hanfangyuan4396/dify-on-wechat/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=hanfangyuan4396/dify-on-wechat" />
+</a>
 
 # 开发计划
-
-- [ ] **完善文档：** README文档下班抽空写的，写的比较简单，之后写详细一些
-- [ ] **企业微信客服通道：** 支持企业微信客服
+- [ ] **Notice插件**: 识别到特定消息，通知指定好友，详情请查看[#18](https://github.com/hanfangyuan4396/dify-on-wechat/issues/18)。为了鼓励各位多参与此项目，在pr中留下联系方式，我会点咖啡或奶茶表示感谢，一点心意~
 - [ ] **测试合并原项目PR：** 原项目有很多比较好的PR没有通过，之后会把一些比较好的feature测试合并进这个仓库
 - [ ] **优化对接Dify：** 目前对接dify的很多代码写的还很潦草，以后逐步优化
+- [ ] **支持：** 企业微信个人号 
 
 也请各位大佬多多提PR，我社畜打工人，精力实在有限~
-
